@@ -9,7 +9,7 @@ import (
 )
 
 // ClientRegisterer is the symbol the plugin loader will try to load. It must implement the RegisterClient interface
-var ClientRegisterer = registerer("krakend-example")
+var HandlerRegisterer = registerer("krakend-example")
 
 type registerer string
 
