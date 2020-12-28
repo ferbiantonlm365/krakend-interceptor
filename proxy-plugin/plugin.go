@@ -23,9 +23,19 @@ func (r registerer) RegisterClients(f func(
 func (r registerer) registerClients(ctx context.Context, extra map[string]interface{}) (http.Handler, error) {
 	// check the passed configuration and initialize the plugin
 	name, ok := extra["name"].(string)
+
 	if !ok {
 		return nil, errors.New("wrong config")
 	}
+
+	permissions, ok := extra["permissions"].(string)
+
+	if !ok {
+		return nil, errors.New("wrong config")
+	}
+
+	fmt.Println("permissions: ", permissions)
+
 	if name != string(r) {
 		return nil, fmt.Errorf("unknown register %s", name)
 	}
