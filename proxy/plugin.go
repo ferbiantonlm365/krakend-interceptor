@@ -9,7 +9,7 @@ import (
 )
 
 // ClientRegisterer is the symbol the plugin loader will try to load. It must implement the RegisterClient interface
-var ClientRegisterer = registerer("krakend-example")
+var ClientRegisterer = registerer("proxy-plugin")
 
 type registerer string
 
@@ -31,12 +31,13 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 	}
 	// return the actual handler wrapping or your custom logic so it can be used as a replacement for the default http client
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(w, "Hello, %q", html.EscapeString(req.URL.Path))
+		fmt.Println("proxy-plugin called")
+		fmt.Fprintf(w, "{\"message\": \"Hello, %s\"}", html.EscapeString(req.URL.Path))
 	}), nil
 }
 
 func init() {
-	fmt.Println("krakend-example client plugin loaded!!!")
+	fmt.Println("proxy-plugin client plugin loaded!!!")
 }
 
 func main() {}
