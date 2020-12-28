@@ -32,7 +32,7 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 	// return the actual handler wrapping or your custom logic so it can be used as a replacement for the default http client
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		fmt.Println("proxy-plugin called")
-		fmt.Fprintf(w, "{\"message\": \"Hello, %s\"}", html.EscapeString(req.URL.Path))
+		fmt.Fprintf(w, "[{\"message\": \"Hello, %s\"}]", html.EscapeString(req.URL.Path))
 	}), nil
 }
 
