@@ -48,7 +48,9 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 		fmt.Println("Begin calling proxy plugin")
 
 		// Create new HTTP client object with default timeout to prevent unexpected behaviour.
-		client := &http.Client{Timeout: time.Second * 10}
+		client := &http.Client{
+			Timeout: time.Second * 10,
+		}
 
 		// Create new HTTP POST request object.
 		newReq, err := http.NewRequest(http.MethodPost, endpoint, nil)
@@ -67,7 +69,7 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 		resp, err := client.Do(newReq)
 
 		fmt.Println("Begin catching")
-		if err != nil || resp == nil {
+		if err != nil && resp.StatusCode == http.StatusOK {
 			fmt.Println("Begin catching response")
 			http.Error(w, "", http.StatusUnauthorized)
 			return
