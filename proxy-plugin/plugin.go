@@ -66,7 +66,9 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 		// Send an HTTP request and returns an HTTP response object.
 		resp, err := client.Do(newReq)
 
+		fmt.Println("Begin catching")
 		if err != nil || resp == nil {
+			fmt.Println("Begin catching response")
 			http.Error(w, "", http.StatusUnauthorized)
 			return
 		}
