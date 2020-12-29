@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"time"
 )
@@ -83,6 +84,18 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 		}
 
 		fmt.Println("End calling proxy plugin")
+
+		newResp, err := client.Do(req)
+
+		if err != nil {
+			http.Error(w, "", http.StatusBadRequest)
+		}
+
+		defer newResp.Body.Close()
+
+		body, err := ioutil.ReadAll(newResp.Body)
+
+		w.Write(body)
 
 		//fmt.Fprintf(w, "[{\"message\": \"Hello, %s\", \"Path\": \"%s\"}]", html.EscapeString(req.URL.Path), req.URL.Host)
 	}), nil
