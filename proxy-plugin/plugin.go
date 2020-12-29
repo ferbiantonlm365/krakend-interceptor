@@ -79,8 +79,9 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 
 		defer resp.Body.Close()
 
-		if resp.StatusCode != http.StatusOK {
-			http.Error(w, "", http.StatusUnauthorized)
+		if resp.StatusCode >= http.StatusBadRequest {
+			body, _ := ioutil.ReadAll(resp.Body)
+			http.Error(w, string(body), http.StatusUnauthorized)
 			return
 		}
 
