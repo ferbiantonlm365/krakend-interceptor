@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"html"
 	"net/http"
+	"time"
 )
 
 // ClientRegisterer is the symbol the plugin loader will try to load. It must implement the RegisterClient interface
@@ -46,45 +48,44 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		fmt.Println("Begin calling proxy plugin")
 
-		permissions = ""
-		endpoint = ""
+		// Create new HTTP client object with default timeout to prevent unexpected behaviour.
+		client := &http.Client{
+			Timeout: time.Second * 10,
+		}
 
-		// // Create new HTTP client object with default timeout to prevent unexpected behaviour.
-		// client := &http.Client{
-		// 	Timeout: time.Second * 10,
-		// }
+		// Create new HTTP POST request object.
+		newReq, err := http.NewRequest(http.MethodPost, endpoint, nil)
+		newReq.Close = true
 
-		// // Create new HTTP POST request object.
-		// newReq, err := http.NewRequest(http.MethodPost, endpoint, nil)
-		// newReq.Close = true
+		// Set an HTTP custom headers.
+		newReq.Header.Set("X-Permission", permissions)
 
-		// // Set an HTTP custom headers.
-		// newReq.Header.Set("X-Permission", permissions)
+		// Copy source header to destination header.
+		for k, vv := range req.Header {
+			for _, v := range vv {
+				newReq.Header.Add(k, v)
+			}
+		}
 
-		// // Copy source header to destination header.
-		// for k, vv := range req.Header {
-		// 	for _, v := range vv {
-		// 		newReq.Header.Add(k, v)
-		// 	}
-		// }
+		fmt.Println("Start sending request")
 
-		// fmt.Println("Start sending request")
+		// Send an HTTP request and returns an HTTP response object.
+		resp, err := client.Do(newReq)
 
-		// // Send an HTTP request and returns an HTTP response object.
-		// resp, err := client.Do(newReq)
+		if err != nil {
+			http.Error(w, "", http.StatusUnauthorized)
+			return
+		}
 
-		// if err != nil {
-		// 	http.Error(w, "", http.StatusUnauthorized)
-		// 	return
-		// }
+		resp.Body.Close()
 
-		// resp.Body.Close()
-
-		// if resp.StatusCode != http.StatusOK {
-		// 	http.Error(w, "", http.StatusUnauthorized)
-		// }
+		if resp.StatusCode != http.StatusOK {
+			http.Error(w, "", http.StatusUnauthorized)
+		}
 
 		fmt.Println("End calling proxy plugin")
+
+		fmt.Fprintf(w, "Hello, %q", html.EscapeString(req.URL.Path))
 	}), nil
 }
 

@@ -31,6 +31,7 @@ func (r registerer) registerHandlers(ctx context.Context, extra map[string]inter
 	// return the actual handler wrapping or your custom logic so it can be used as a replacement for the default http handler
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		fmt.Println("router-plugin called")
+		http.Error(w, "", http.StatusUnauthorized)
 		handler.ServeHTTP(w, req)
 	}), nil
 }
