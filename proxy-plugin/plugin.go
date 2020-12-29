@@ -4,9 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"html"
-	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 // ClientRegisterer is the symbol the plugin loader will try to load. It must implement the RegisterClient interface
@@ -46,11 +45,15 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 
 	// Return the actual handler wrapping or your custom logic so it can be used as a replacement for the default http client
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		// Create new HTTP client object.
-		client := &http.Client{}
+		fmt.Println("Begin calling proxy plugin")
+
+		// Create new HTTP client object with default timeout to prevent unexpected behaviour.
+		client := &http.Client{Timeout: time.Second * 10}
 
 		// Create new HTTP POST request object.
 		newReq, err := http.NewRequest(http.MethodPost, endpoint, nil)
+
+		// Set an HTTP custom headers.
 		newReq.Header.Set("X-Permission", permissions)
 
 		// Copy source header to destination header.
@@ -60,23 +63,15 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 			}
 		}
 
+		// Send an HTTP request and returns an HTTP response object.
 		resp, err := client.Do(newReq)
 
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-		}
-
-		if resp.StatusCode >= http.StatusBadRequest {
-			bodyBytes, _ := ioutil.ReadAll(resp.Body)
-			bodyMessage := string(bodyBytes)
-
-			http.Error(w, bodyMessage, resp.StatusCode)
-
+		if err != nil || resp == nil {
+			http.Error(w, "", http.StatusUnauthorized)
 			return
 		}
 
-		fmt.Println("proxy-plugin called")
-		fmt.Fprintf(w, "[{\"message\": \"Hello, %s\"}]", html.EscapeString(req.URL.Path))
+		fmt.Println("End calling proxy plugin")
 	}), nil
 }
 
