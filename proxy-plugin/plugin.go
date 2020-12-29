@@ -65,14 +65,18 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 			}
 		}
 
+		fmt.Println("Start sending request")
+
 		// Send an HTTP request and returns an HTTP response object.
 		resp, err := client.Do(newReq)
 
-		fmt.Println("Begin catching")
-		if err != nil && resp.StatusCode == http.StatusOK {
-			fmt.Println("Begin catching response")
+		if err != nil {
 			http.Error(w, "", http.StatusUnauthorized)
 			return
+		}
+
+		if resp.StatusCode != http.StatusOK {
+			http.Error(w, "", http.StatusUnauthorized)
 		}
 
 		fmt.Println("End calling proxy plugin")
