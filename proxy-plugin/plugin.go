@@ -46,6 +46,9 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		fmt.Println("Begin calling proxy plugin")
 
+		permissions = ""
+		endpoint = ""
+
 		// // Create new HTTP client object with default timeout to prevent unexpected behaviour.
 		// client := &http.Client{
 		// 	Timeout: time.Second * 10,
