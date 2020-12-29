@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"html"
 	"net/http"
 	"time"
 )
@@ -85,7 +84,7 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 
 		fmt.Println("End calling proxy plugin")
 
-		fmt.Fprintf(w, "[{\"message\": \"Hello, %s\", \"Path\": \"%s\"}]", html.EscapeString(req.URL.Path), req.URL.Host)
+		//fmt.Fprintf(w, "[{\"message\": \"Hello, %s\", \"Path\": \"%s\"}]", html.EscapeString(req.URL.Path), req.URL.Host)
 	}), nil
 }
 
