@@ -77,27 +77,27 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 			return
 		}
 
-		resp.Body.Close()
+		defer resp.Body.Close()
 
 		if resp.StatusCode != http.StatusOK {
 			http.Error(w, "", http.StatusUnauthorized)
+			return
 		}
-
-		fmt.Println("End calling proxy plugin")
 
 		newResp, err := client.Do(req)
 
 		if err != nil {
 			http.Error(w, "", http.StatusBadRequest)
+			return
 		}
 
 		defer newResp.Body.Close()
 
 		body, err := ioutil.ReadAll(newResp.Body)
 
-		w.Write(body)
+		fmt.Println("End calling proxy plugin")
 
-		//fmt.Fprintf(w, "[{\"message\": \"Hello, %s\", \"Path\": \"%s\"}]", html.EscapeString(req.URL.Path), req.URL.Host)
+		w.Write(body)
 	}), nil
 }
 
