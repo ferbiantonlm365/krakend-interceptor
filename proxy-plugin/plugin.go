@@ -54,6 +54,7 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 
 		// Create new HTTP POST request object.
 		newReq, err := http.NewRequest(http.MethodPost, endpoint, nil)
+		newReq.Close = true
 
 		// Set an HTTP custom headers.
 		newReq.Header.Set("X-Permission", permissions)
@@ -74,6 +75,8 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 			http.Error(w, "", http.StatusUnauthorized)
 			return
 		}
+
+		resp.Body.Close()
 
 		if resp.StatusCode != http.StatusOK {
 			http.Error(w, "", http.StatusUnauthorized)
