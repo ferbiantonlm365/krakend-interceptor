@@ -10,7 +10,7 @@ import (
 )
 
 // ClientRegisterer is the symbol the plugin loader will try to load. It must implement the RegisterClient interface
-var ClientRegisterer = registerer("proxy-plugin")
+var ClientRegisterer = registerer("acl-plugin")
 
 type registerer string
 
@@ -41,12 +41,12 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 	}
 
 	if name != string(r) {
-		return nil, fmt.Errorf("unknown register %s", name)
+		return nil, fmt.Errorf("Unknown register %s", name)
 	}
 
 	// Return the actual handler wrapping or your custom logic so it can be used as a replacement for the default http client
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		fmt.Println("Begin calling proxy plugin")
+		fmt.Println("Begin calling ACL plugin")
 
 		// Create new HTTP client object with default timeout to prevent unexpected behaviour.
 		client := &http.Client{
@@ -58,7 +58,7 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 		newReq.Close = true
 
 		// Set an HTTP custom headers.
-		newReq.Header.Set("X-Permission", permissions)
+		newReq.Header.Set("X-Permissions", permissions)
 
 		// Copy source header to destination header.
 		for k, vv := range req.Header {
@@ -96,14 +96,14 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 
 		body, err := ioutil.ReadAll(newResp.Body)
 
-		fmt.Println("End calling proxy plugin")
+		fmt.Println("End calling ACL plugin")
 
 		w.Write(body)
 	}), nil
 }
 
 func init() {
-	fmt.Println("proxy-plugin client plugin loaded!!!")
+	fmt.Println("acl-plugin client ACL loaded!!!")
 }
 
 func main() {}
