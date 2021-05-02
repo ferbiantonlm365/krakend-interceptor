@@ -1,3 +1,5 @@
+![Krakend logo](https://github.com/devopsfaith/krakend/blob/master/docs/images/krakend.png)
+
 # krakend-interceptor
 KrakenD HTTP Request Interceptor Plugin
 
