@@ -57,15 +57,15 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 		newReq, err := http.NewRequest(http.MethodPost, endpoint, nil)
 		newReq.Close = true
 
-		// Set an HTTP custom headers.
-		newReq.Header.Set("X-Permissions", permissions)
-
 		// Copy source header to destination header.
 		for k, vv := range req.Header {
 			for _, v := range vv {
 				newReq.Header.Add(k, v)
 			}
 		}
+
+		// Set an HTTP custom headers.
+		newReq.Header.Set("X-Permissions", permissions)
 
 		fmt.Println("Start sending request")
 
