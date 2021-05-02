@@ -1,6 +1,6 @@
 ![Krakend logo](https://github.com/devopsfaith/krakend/blob/master/docs/images/krakend.png)
 
-# krakend-interceptor
+# KrakenD Interceptor
 KrakenD HTTP Request Interceptor Plugin
 
 # Install GCC
