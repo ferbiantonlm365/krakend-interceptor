@@ -36,19 +36,19 @@ sudo apt-get update && apt-get upgrade
 **Get binary source from external link:**
 
 ```sh
-wget https://dl.google.com/go/go1.13.linux-amd64.tar.gz
+wget https://golang.org/dl/go1.15.2.linux-amd64.tar.gz
 ```
 
 **Verify the tarball:**
 
 ```sh
-sha256sum go1.13.linux-amd64.tar.gz
+sha256sum go1.15.2.linux-amd64.tar.gz
 ```
 
 **Extract the binary into /usr/local/go directory:**
 
 ```sh
-sudo tar -C /usr/local -xzf go1.13.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.15.2.linux-amd64.tar.gz
 ```
 
 **Adjusting the PATH variable:**
