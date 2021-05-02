@@ -85,20 +85,7 @@ func (r registerer) registerClients(ctx context.Context, extra map[string]interf
 			return
 		}
 
-		newResp, err := client.Do(req)
-
-		if err != nil {
-			http.Error(w, "", http.StatusBadRequest)
-			return
-		}
-
-		defer newResp.Body.Close()
-
-		body, err := ioutil.ReadAll(newResp.Body)
-
 		fmt.Println("End calling ACL plugin")
-
-		w.Write(body)
 	}), nil
 }
 
